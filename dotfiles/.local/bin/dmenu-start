@@ -1,0 +1,68 @@
+#!/bin/sh
+
+# import pywal colors
+. "${HOME}/.cache/wal/colors.sh"
+
+# init (values from dwm/config.h)
+vertpad=5
+sidepad=5
+width=640
+height=22
+
+# match dmenu to bar position
+menu='dmenu -x $sidepad -y $vertpad -z $width -h $height -nb "$color0" -nf "$color15" -sb "$color1" -sf "$color15"'
+
+screenshot() {
+	screenshot_path="${HOME}/Obrazy/Screenshots/$(date +%F-%T).png"
+	
+	screen=''
+	area=''
+	window=''
+
+	app="maim -q"
+
+	case $(printf '%s\n%s\n%s' "$screen" "$area" "$window" | eval "$menu" "-p 'Screenshot'") in
+		"$screen") args='--delay=1' ;;
+		"$area")   args='-s' ;;
+		"$window") args='-st 9999999' ;;
+		*)		   exit 1 ;;
+	esac
+
+	case $1 in
+		"save") eval "$app" "$args" "$screenshot_path" ;;
+		"copy") eval "$app" "$args" | xclip -selection clipboard -t image/png ;;
+		*) 		exit 1 ;;	
+	esac	
+}
+
+
+power_menu() {
+	power_off=''
+	reboot='ﰇ'
+
+	case $(printf '%s\n%s' "$power_off" "$reboot" | eval "$menu" "-p 'Power menu'") in
+		"$power_off") prompt "sudo poweroff" ;;
+		"$reboot") 	  prompt "sudo reboot";;
+		*) 			  exit 1 ;;		
+	esac	
+}
+
+
+run() {
+	exec $(dmenu_path | eval "$menu" "$@")
+}
+
+
+prompt() {
+	[ "$(printf "No\\nYes" | eval "$menu" )" = "Yes" ] && $1
+}
+
+
+while getopts 's:pr' opt; do
+  case "${opt}" in
+    s) screenshot "$OPTARG" ;;
+    p) power_menu ;;
+    r) run ;;
+    \?)  exit 1 ;;
+  esac
+done

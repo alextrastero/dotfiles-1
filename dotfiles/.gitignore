@@ -1,0 +1,5 @@
+.ssh
+.pypirc
+.DS_Store
+.config/micro/backups
+.config/micro/buffers

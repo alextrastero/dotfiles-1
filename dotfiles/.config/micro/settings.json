@@ -1,0 +1,10 @@
+{
+    "*.md": {
+        "aspell.check": "on",
+        "aspell.lang": "pl"
+    },
+    "colorscheme": "simple",
+    "scrollbar": true,
+    "softwrap": true,
+    "wordwrap": true
+}

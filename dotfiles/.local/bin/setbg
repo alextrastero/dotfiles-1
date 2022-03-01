@@ -1,0 +1,12 @@
+#!/bin/sh
+
+wall=$(find "$HOME"/Obrazy/Wallpapers -type f | shuf -n 1)
+echo "Setting $wall as wallpaper"
+
+xwallpaper --zoom "$wall"
+
+echo "Generating colorschemes..."
+wal -i "$wall" --backend haishoku >/dev/null
+
+echo "Setting colorschemes for Steam"
+cd "$HOME"/.local/src/wal_steam/ ./wal_steam.py -w || exit

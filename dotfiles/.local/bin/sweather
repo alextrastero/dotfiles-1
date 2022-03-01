@@ -1,0 +1,41 @@
+#!/bin/bash
+
+KEY="your key"
+CITY="your city"
+UNITS="metric"
+SYMBOL="°C"
+
+API="api.openweathermap.org/data/2.5"
+
+get_icon() {
+    case $1 in
+        01d) icon="";;
+        01n) icon="";;
+        02d) icon="";;
+        02n) icon="";;
+        03*) icon="";;
+        04*) icon="";;
+        09d) icon="";;
+        09n) icon="";;
+        10d) icon="";;
+        10n) icon="";;
+        11*) icon="";;
+        13*) icon="";;
+        50*) icon="";;
+        *) icon="";
+    esac
+
+    echo $icon
+}
+
+get_weather() {
+	current=$(curl -sf "$API/weather?q=$CITY&appid=$KEY&units=$UNITS")
+
+	current_temp=$(echo "$current" | jq ".main.temp" | cut -d "." -f 1)
+	current_icon=$(echo "$current" | jq -r ".weather[0].icon")
+
+	echo "$(get_icon "$current_icon") $current_temp$SYMBOL"
+	
+}
+
+get_weather
